@@ -23,7 +23,7 @@ export default function Header() {
                 </div>
                 <Link href="/"
                     className="flex gap-1 items-center">
-                    <span className="material-symbols-outlined btn-material-icon">home</span>
+                    <span className="material-symbols-outlined btn-material-icon">family_group</span>
                     <h2 className="text-2xl font-semibold tracking-tight text-(--text)">
                         Familia
                     </h2>
@@ -37,7 +37,7 @@ export default function Header() {
             </div>
             <div className="flex justify-center p-2">
                 <button
-                    className="material-symbols-outlined btn-material-icon"
+                    className="material-symbols-outlined rounded text-(--primary)"
                     onClick={() => router.back()}>
                     reply
                 </button>

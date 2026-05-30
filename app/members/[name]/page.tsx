@@ -8,9 +8,9 @@ import { Member } from "@/lib/definitions";
 export default async function MemberPage({ params }: { params: Promise<{ name: string }> }) {
     const { name } = await params;
 
-    if (!name) return (<div>No member name provided..!</div>)
+    const cleanName = name?.replace(/%20/g, " ") || null;
 
-    const cleanName = name.replace(/%20/g, " ");
+    if (!cleanName) return (<div>No member name provided..!</div>)
 
     const snaps = await adminDB.collection("members")
         .where("name", "==", cleanName)
