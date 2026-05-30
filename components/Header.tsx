@@ -1,9 +1,9 @@
 "use client"
 import { useRef, useState } from "react";
-import Image from "next/image";
 import Link from "next/link";
 import MainMenu from "./MenuMain";
 import { useRouter } from "next/navigation";
+import UserAvatarLink from "./useAvatarLink";
 
 
 export default function Header() {
@@ -29,10 +29,7 @@ export default function Header() {
                     </h2>
                 </Link>
                 <div className="flex justify-between items-center gap-2">
-                    <Link href="/user"
-                        className="material-symbols-outlined btn-material-icon">
-                        settings_account_box
-                    </Link>
+                    <UserAvatarLink />
                 </div>
             </div>
             <div className="flex justify-center p-2">

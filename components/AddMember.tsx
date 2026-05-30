@@ -1,11 +1,15 @@
 "use client";
 
+import { useFirebaseUser } from "@/hooks/useFirebaseUser";
 import { db, storage } from "@/lib/client/firebaseClient";
 import { Member } from "@/lib/definitions";
+import { toCamelCase } from "@/lib/string/camelcase";
+import { slugify } from "@/lib/string/slugify";
+import { getAuth, onAuthStateChanged } from "firebase/auth";
 import { addDoc, collection } from "firebase/firestore";
 import { getDownloadURL, ref, uploadBytes } from "firebase/storage";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 interface Props {
     onMemberAdded?: () => void;
@@ -22,10 +26,25 @@ export default function AddMemberForm({ onMemberAdded, isOpen }: Props) {
         dob: "",
         whoami: "",
         maritalstat: "Single",
-        pic: null,
+        picUrl: null,
     });
-
     const router = useRouter();
+
+    useEffect(() => {
+        const auth = getAuth();
+
+        const unsub = onAuthStateChanged(auth, (user) => {
+            if (user) {
+                console.log("User logged in:", user.uid);
+            } else {
+                console.log("No user logged in");
+                router.push("/auth/login")
+
+            }
+        });
+
+        return () => unsub();
+    }, []);
 
     function handleImage(e: React.ChangeEvent<HTMLInputElement>) {
         const file = e.target.files?.[0];
@@ -35,7 +54,7 @@ export default function AddMemberForm({ onMemberAdded, isOpen }: Props) {
 
             setMem((prev) => ({
                 ...prev,
-                pic: file,
+                picUrl: file,
             }));
             setpicSelected(true);
         }
@@ -49,7 +68,7 @@ export default function AddMemberForm({ onMemberAdded, isOpen }: Props) {
 
         setMem((prev) => ({
             ...prev,
-            pic: null,
+            picUrl: null,
         }));
 
         // Reset the file input
@@ -64,16 +83,16 @@ export default function AddMemberForm({ onMemberAdded, isOpen }: Props) {
 
             let picUrl = "";
 
-            // // Upload profile picture if exists
-            // if (mem.pic) {
-            //     const storageRef = ref(storage, `members/${Date.now()}_${mem.pic.name}`);
-            //     await uploadBytes(storageRef, mem.pic);
-            //     picUrl = await getDownloadURL(storageRef);
-            // }
+            // Upload profile picture if exists
+            if (mem.picUrl) {
+                const storageRef = ref(storage, `members/${Date.now()}_${slugify(mem.name)}`);
+                await uploadBytes(storageRef, mem.picUrl);
+                picUrl = await getDownloadURL(storageRef);
+            }
 
             // Prepare Firestore document
             const docData = {
-                name: mem.name.trim(),
+                name: toCamelCase(mem.name),
                 gender: mem.gender,
                 dob: mem.dob,
                 whoami: mem.whoami,
@@ -99,10 +118,16 @@ export default function AddMemberForm({ onMemberAdded, isOpen }: Props) {
             {!open && (
                 <div className="w-fit mx-auto">
                     <button
-                        className="material-symbols-outlined btn-material-icons text-3xl! bg-(--secondary) p-4 text-white m-2 rounded shadow-lg"
+                        className="flex flex-col gap-2 bg-(--primary) p-4 text-white m-2 rounded shadow-lg"
                         onClick={handleOpen}
                     >
-                        person_add
+                        <span
+                            className="material-symbols-outlined btn-material-icons">
+                            person_add
+                        </span>
+                        <span>
+                            Add a member
+                        </span>
                     </button>
                 </div>
             )}
@@ -126,9 +151,9 @@ export default function AddMemberForm({ onMemberAdded, isOpen }: Props) {
                             type="text"
                             className="w-full border rounded p-2"
                             placeholder="Enter name"
-                            onChange={(e) =>
+                            onChange={(e) => {
                                 setMem((prev) => ({ ...prev, name: e.target.value }))
-                            }
+                            }}
                         />
                     </div>
 
@@ -235,7 +260,7 @@ export default function AddMemberForm({ onMemberAdded, isOpen }: Props) {
 
                     {/* Submit */}
                     <button
-                        className="w-full bg-blue-600 text-white py-2 rounded hover:bg-blue-700"
+                        className="w-full bg-(--primary) text-(--text) py-2 rounded hover:bg-blue-700"
                         onClick={handleSave}
                     >
                         Save Member

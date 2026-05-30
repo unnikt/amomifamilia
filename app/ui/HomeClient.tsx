@@ -20,7 +20,6 @@ export default function HomeClient() {
                 <div>
                     <p className="title text-center">Search a member</p>
                     <MemberSearch onSelect={(name) => router.push(`/members/${name}`)} />
-                    <p className="title text-center mt-3">Add a member</p>
 
                 </div>
             }

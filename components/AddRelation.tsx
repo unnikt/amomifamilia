@@ -30,8 +30,10 @@ const RELATIONS = [
 interface Props {
     memberId: string;
     name: string;
+    gender: string;
+    onClose?: () => void;
 }
-export default function AddRelation({ memberId, name }: Props) {
+export default function AddRelation({ memberId, name, gender, onClose }: Props) {
     const [members, setMembers] = useState<(Member & { id: string })[]>([]);
     const [selectedMember, setSelectedMember] = useState("");
     const [relation, setRelation] = useState("");
@@ -68,7 +70,8 @@ export default function AddRelation({ memberId, name }: Props) {
         const otherMember = otherSnap.data() as Member;
 
         // Determine reverse relation based on gender
-        const reverse = getReverseRelation(relation, otherMember.gender);
+        const reverse = getReverseRelation(relation, gender);
+        console.log(relation, otherMember.gender, reverse, gender);
 
         // 1. Add relation to main member
         await updateDoc(mainRef, {
@@ -91,8 +94,15 @@ export default function AddRelation({ memberId, name }: Props) {
 
     return (
         <div className="p-2 bg-white  space-y-1">
-            <h3 className="text-lg font-semibold">Add Relation</h3>
-
+            <div className="flex justify-between items-center py-2">
+                <h3 className="text-lg font-semibold mb-1">Add relation</h3>
+                <button
+                    className="material-symbols-outlined text-(--primary)/70"
+                    onClick={() => { if (onClose) onClose(); }}
+                >
+                    close
+                </button>
+            </div>
             {/* Select Relation */}
             <div>
                 <select

@@ -4,7 +4,7 @@ export type Member = {
     dob: string;
     whoami: string;
     maritalstat: "Single" | "Married" | "Divorced" | "Widowed";
-    pic: File | null;
+    picUrl: File | null;
     relations?: Relation[];
 };
 

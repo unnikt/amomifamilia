@@ -1,4 +1,3 @@
-import { adminDB } from "@/lib/server/firebaseAdmin";
 
 export default async function Page() {
     // const snap = await adminDB.collection("members").limit(5).get();

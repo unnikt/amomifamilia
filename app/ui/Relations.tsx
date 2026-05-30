@@ -1,13 +1,16 @@
 "use client"
+import AddRelation from "@/components/AddRelation";
 import { Member } from "@/lib/definitions";
 import { getMembersByIds } from "@/lib/getMembersById";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 
 interface Props {
+    id: string;
     member: Member;
 }
-export default function RelationsClient({ member }: Props) {
+export default function RelationsClient({ id, member }: Props) {
+    const [show, setShow] = useState(false)
     const [relations, setRelations] = useState<
         { id: string; name: string; type: string }[]
     >([]);
@@ -38,8 +41,16 @@ export default function RelationsClient({ member }: Props) {
     return (
         <div>
             {/* Relations Section */}
-            < div className=" p-2 bg-gray-50 " >
-                <h3 className="text-lg font-semibold mb-1">Family</h3>
+            < div className=" p-2  bg-gray-100 " >
+                <div className="flex justify-between items-center py-2">
+                    <h3 className="text-lg font-semibold mb-1">Family</h3>
+                    <button
+                        className="material-symbols-outlined text-(--primary)/70"
+                        onClick={() => setShow(true)}
+                    >
+                        person_add
+                    </button>
+                </div>
 
                 {
                     relations.length === 0 && (
@@ -62,6 +73,10 @@ export default function RelationsClient({ member }: Props) {
                     ))}
                 </ul>
             </div >
+            {show && <AddRelation
+                memberId={id} name={member.name} gender={member.gender}
+                onClose={() => setShow(false)} />
+            }
         </div>
     )
 }

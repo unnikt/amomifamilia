@@ -20,12 +20,13 @@ export default async function MemberPage({ params }: { params: Promise<{ name: s
         .get();
 
     if (snaps.empty) {
-        return (<div>${name} not found!</div>)
+        return (<div
+            className="mx-auto p-4">{cleanName} not found!</div>)
     }
     if (snaps.size > 1)
-        return (<div>Found Multiple individuals</div>)
+        return (<div className="mx-auto p-4">Found Multiple individuals</div>)
 
-    const member = snaps.docs[0].data();
+    const member = snaps.docs[0].data() as Member;
     const id = snaps.docs[0].id;
 
 
@@ -34,11 +35,11 @@ export default async function MemberPage({ params }: { params: Promise<{ name: s
             <h1 className="text-2xl font-bold">{member.name}</h1>
 
             <div className="flex justify-start gap-2 items-center">
-                {member.pic ? (
+                {member.picUrl ? (
                     <img
-                        src={member.pic}
+                        src={member.picUrl}
                         alt={member.name}
-                        className="w-40 h-40 object-cover rounded-md mx-auto border m-0"
+                        className="w-40 h-40 object-cover rounded-md border m-0"
                     />
                 ) : (
                     <div className="w-40 h-40 bg-gray-200 rounded-md m-0 flex items-center justify-center text-gray-500">
@@ -56,8 +57,7 @@ export default async function MemberPage({ params }: { params: Promise<{ name: s
                 </div>
             </div>
 
-            <RelationsClient member={member as Member} />
-            <AddRelation memberId={id} name={member.name} />
+            <RelationsClient id={id} member={member as Member} />
         </div>
     );
 }

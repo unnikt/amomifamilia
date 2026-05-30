@@ -40,9 +40,9 @@ export default function MemberList({ refreshKey }: Props) {
                     className="flex items-center gap-4 p-4 bg-white shadow rounded-lg border border-slate-300"
                 >
                     {/* Profile Picture */}
-                    {m.pic ? (
+                    {m.picUrl ? (
                         <img
-                            src={m.pic}
+                            src={m.picUrl}
                             alt={m.name}
                             className="w-16 h-16 rounded-md object-cover border"
                         />
