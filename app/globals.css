@@ -1,8 +1,14 @@
 @import "tailwindcss";
+@import "material-symbols/outlined.css";
 
 :root {
   --background: #ffffff;
   --foreground: #171717;
+  --primary: #6002ee;
+  --text: white;
+  --secondary: #138288;
+  --bg: var(--color-slate-400);
+  --surface: var(--color-slate-200);
 }
 
 @theme inline {
@@ -14,8 +20,9 @@
 
 @media (prefers-color-scheme: dark) {
   :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+    --primary: #6002ee;
+    --secondary: #138288;
+
   }
 }
 
@@ -23,4 +30,12 @@ body {
   background: var(--background);
   color: var(--foreground);
   font-family: Arial, Helvetica, sans-serif;
+}
+
+.title {
+  @apply text-xl font-bold text-slate-600;
+}
+
+.btn-material-icon {
+  @apply bg-(--primary) text-(--text) p-1;
 }
