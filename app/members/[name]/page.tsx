@@ -5,11 +5,12 @@ import AddRelation from "@/components/AddRelation";
 import RelationsClient from "@/app/ui/Relations";
 import { Member } from "@/lib/definitions";
 
-// export default async function MemberPage({ params }: { params: Promise<{ name: string }> }) {
-//     const { name } = await params;
-export default async function MemberPage({ params }: { params: { name: string } }) {
-    const name = params?.name ?? "";
+export default async function MemberPage({ params }: { params: Promise<{ name: string }> }) {
+    const { name } = await params;
+    // export default async function MemberPage({ params }: { params: { name: string } }) {
+    //     const name = params?.name ?? "";
 
+    console.log(name)
     const cleanName = name?.replace(/%20/g, " ") || null;
 
     if (!cleanName) return (<div>No member name provided..!</div>)
