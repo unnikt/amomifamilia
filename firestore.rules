@@ -1,0 +1,16 @@
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // Allow public read/write for Members
+    match /members/{docId} {
+      allow read, write: if true;
+    }
+
+    // Lock everything else
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}
