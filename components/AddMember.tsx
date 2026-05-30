@@ -1,6 +1,5 @@
 "use client";
 
-import { useFirebaseUser } from "@/hooks/useFirebaseUser";
 import { db, storage } from "@/lib/client/firebaseClient";
 import { Member } from "@/lib/definitions";
 import { toCamelCase } from "@/lib/string/camelcase";
