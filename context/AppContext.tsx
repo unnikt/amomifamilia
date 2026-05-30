@@ -1,14 +1,17 @@
 // context/AppContext.tsx
 "use client";
 
-import { createContext, useContext, useState } from "react";
+import { ReactNode, createContext, useContext, useState } from "react";
 
 const AppContext = createContext(null);
 
-export function AppProvider({ children }) {
+interface Props {
+    children: ReactNode;
+}
+export function AppProvider({ children }: Props) {
     const [minimiseHeader, setMinimiseHeader] = useState<boolean>(true);
     return (
-        <AppContext.Provider value={{ minimiseHeader, setMinimiseHeader }}>
+        <AppContext.Provider value={null}>
             {children}
         </AppContext.Provider>
     );
