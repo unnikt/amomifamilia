@@ -82,7 +82,7 @@ export default function AddMemberForm({ onMemberAdded, isOpen }: Props) {
 
             let picUrl = "";
 
-            // Upload profile picture if exists
+            // Upload profile picture if exists..
             if (mem.picUrl) {
                 const storageRef = ref(storage, `members/${Date.now()}_${slugify(mem.name)}`);
                 await uploadBytes(storageRef, mem.picUrl);
