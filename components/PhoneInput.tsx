@@ -40,7 +40,7 @@ export default function PhoneInput({ value, onChange }: {
                 value={value}
                 onChange={handleInput}
                 placeholder="Enter phone number"
-                className="border rounded px-3 py-2 w-full"
+                className="border rounded px-3 py-2 w-40"
             />
 
             {error && (
