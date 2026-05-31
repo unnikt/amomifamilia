@@ -15,6 +15,7 @@ interface Props {
 export default function RelationsClient({ id, member }: Props) {
     const router = useRouter();
     const [show, setShow] = useState(false)
+    const [loading, setLoading] = useState(true)
     const [relations, setRelations] = useState<
         { id: string; name: string; type: string }[]
     >([]);
@@ -22,7 +23,6 @@ export default function RelationsClient({ id, member }: Props) {
     useEffect(() => {
         async function loadRelations() {
             if (!member?.relations) return;
-
             const ids = member.relations.map((r: any) => r.memberId);
             const relatedMembers = await getMembersByIds(ids);
 
@@ -36,6 +36,7 @@ export default function RelationsClient({ id, member }: Props) {
             });
 
             setRelations(merged);
+            setLoading(false);
         }
 
         loadRelations();
@@ -73,7 +74,7 @@ export default function RelationsClient({ id, member }: Props) {
                     </button>
                 </div>
 
-                {
+                {loading ? <p className="text-gray-500 text-sm">loading...</p> :
                     relations.length === 0 && (
                         <p className="text-gray-500 text-sm">No relations added.</p>
                     )

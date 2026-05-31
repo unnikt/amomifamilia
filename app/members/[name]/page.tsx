@@ -47,18 +47,9 @@ export default async function MemberPage({ params }: { params: Promise<{ name: s
                     <p>
                         <strong>Born on:</strong> {member.dob}
                     </p>
-                    <div className="flex flex-col">
-                        {/* <a
-                            href={`tel:${member.phone}`}
-                            className="flex w-fit gap-1 border-2 border-(--primary)/50 text-(--primary) py-2 px-4 my-2 rounded-md shadow"
-                        >
-                            <span className="material-symbols-outlined">call</span>
-                            <span>{member.phone}</span>
-                        </a> */}
-                        <EditPhoneNumber id={id} member={member} />
-                    </div>
                 </div>
             </div>
+            <EditPhoneNumber id={id} member={member} />
             <RelationsClient id={id} member={member as Member} />
         </div>
     );
