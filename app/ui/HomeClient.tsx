@@ -23,7 +23,6 @@ export default function HomeClient() {
 
                     <p className="title text-center">Search a member</p>
                     <MemberSearch onSelect={(name) => router.push(`/members/${name}`)} />
-
                 </div>
             }
             <AddMemberForm isOpen={(b) => setOpen(b)} onMemberAdded={handleMemberAdded} />

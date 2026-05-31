@@ -127,7 +127,7 @@ export default function AddMemberForm({ onMemberAdded, isOpen }: Props) {
     }
 
     return (
-        <div className="mx-auto w-full ">
+        <div className="mx-auto ">
             {!open && (
                 <div className="w-full mx-auto">
                     <button
