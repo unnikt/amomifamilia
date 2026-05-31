@@ -25,7 +25,7 @@ export default function Header() {
                     className="flex gap-2 items-center">
                     <span className="material-symbols-outlined btn-material-icon">family_group</span>
                     <h2 className="text-2xl  tracking-wide text-(--text)">
-                        mifamili
+                        Mi famili
                     </h2>
                 </Link>
                 <div className="flex justify-between items-center gap-2">

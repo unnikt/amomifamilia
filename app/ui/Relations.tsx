@@ -88,7 +88,7 @@ export default function RelationsClient({ id, member }: Props) {
                             >
                                 {/* Left side: relation type + link */}
                                 {/* <div className="flex flex-col"> */}
-                                <span className="font-medium w-28">{r.type}</span>
+                                <span className="font-medium w-16">{r.type}</span>
                                 <Link
                                     href={`/members/${r.name}`}
                                     className="text-blue-600 hover:underline text-sm flex-1"
