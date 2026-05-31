@@ -127,7 +127,7 @@ export default function AddMemberForm({ onMemberAdded, isOpen }: Props) {
     }
 
     return (
-        <div className="mx-auto  ">
+        <div className="mx-auto w-full ">
             {!open && (
                 <div className="w-full mx-auto">
                     <button
@@ -192,82 +192,80 @@ export default function AddMemberForm({ onMemberAdded, isOpen }: Props) {
                         <PhoneInput value={phone} onChange={setPhone} />
                     </div>
 
-                    <div className="flex justify-between gap-2">
-                        <div className="flex flex-col gap-2">
-                            {/* Gender */}
-                            <div>
-                                <label className="block text-sm font-medium text-gray-700">
-                                    Gender
-                                    {missing && <span className="text-red-500"> *required</span>}
-                                </label>
-                                <div className="flex gap-1 border p-2 rounded ">
-                                    {["Male", "Female", "Other"].map((g) => (
-                                        <label key={g} className="flex items-center gap-2">
-                                            <input
-                                                type="radio"
-                                                name="gender"
-                                                value={g}
-                                                checked={gender === g}
-                                                onChange={() =>
-                                                    setGender(g as Member["gender"])
-                                                }
-                                            />
-                                            <span>{g}</span>
-                                        </label>
-                                    ))}
-                                </div>
-                            </div>
-                            {/* DOB */}
-                            <div>
-                                <label className="block text-sm font-medium text-gray-700">
-                                    Date of Birth
-                                </label>
-                                <input
-                                    type="date"
-                                    className="w-full border rounded p-2"
-                                    onChange={(e) =>
-                                        setMem((prev) => ({ ...prev, dob: e.target.value }))
-                                    }
-                                />
-                            </div>
-                        </div>
-
-
-                        {/* Profile Pic */}
-                        <div className="flex items-center">
-                            {!picSelected &&
-                                <div className="mt-1">
-                                    <label
-                                        htmlFor="profilePicInput"
-                                        className="h-32 w-32 mr-2  inline-flex items-center gap-2 p-3  bg-slate-400 text-white rounded cursor-pointer hover:opacity-90"
-                                    >
-                                        <span className="material-symbols-outlined">upload</span>
-                                        <span>Upload Profile Picture</span>
+                    <div className="flex flex-col gap-2 flex-1">
+                        {/* Gender */}
+                        <div>
+                            <label className="block text-sm font-medium text-gray-700">
+                                Gender
+                                {missing && <span className="text-red-500"> *required</span>}
+                            </label>
+                            <div className="flex gap-1 border p-2 rounded ">
+                                {["Male", "Female", "Other"].map((g) => (
+                                    <label key={g} className="flex items-center gap-2">
+                                        <input
+                                            type="radio"
+                                            name="gender"
+                                            value={g}
+                                            checked={gender === g}
+                                            onChange={() =>
+                                                setGender(g as Member["gender"])
+                                            }
+                                        />
+                                        <span>{g}</span>
                                     </label>
-
-                                    <input
-                                        id="profilePicInput"
-                                        type="file"
-                                        accept="image/*"
-                                        onChange={handleImage}
-                                        className="hidden"
-                                    />
-                                </div>}
-
-                            {profilePic && (
-                                <img
-                                    src={profilePic}
-                                    alt="Preview"
-                                    className="w-32 h-32 mr-2 object-cover rounded-md border border-slate-400"
-                                />
-                            )}
-                            {picSelected && <span
-                                className="material-symbols-outlined  text-slate-400! cursor-pointer"
-                                onClick={handleDeletePic}
-                            >
-                                delete
-                            </span>}
+                                ))}
+                            </div>
                         </div>
+                        {/* DOB */}
+                        <div>
+                            <label className="block text-sm font-medium text-gray-700">
+                                Date of Birth
+                            </label>
+                            <input
+                                type="date"
+                                className="w-full border rounded p-2"
+                                onChange={(e) =>
+                                    setMem((prev) => ({ ...prev, dob: e.target.value }))
+                                }
+                            />
+                        </div>
+                    </div>
+
+
+                    {/* Profile Pic */}
+                    <div className="flex items-center w-32 shrink-0">
+                        {!picSelected &&
+                            <div className="mt-1">
+                                <label
+                                    htmlFor="profilePicInput"
+                                    className="h-32 w-32 mr-2  inline-flex items-center gap-2 p-3  bg-slate-400 text-white rounded cursor-pointer hover:opacity-90"
+                                >
+                                    <span className="material-symbols-outlined">upload</span>
+                                    <span>Upload Profile Picture</span>
+                                </label>
+
+                                <input
+                                    id="profilePicInput"
+                                    type="file"
+                                    accept="image/*"
+                                    onChange={handleImage}
+                                    className="hidden"
+                                />
+                            </div>}
+
+                        {profilePic && (
+                            <img
+                                src={profilePic}
+                                alt="Preview"
+                                className="w-32 h-32 mr-2 object-cover rounded-md border border-slate-400"
+                            />
+                        )}
+                        {picSelected && <span
+                            className="material-symbols-outlined  text-slate-400! cursor-pointer"
+                            onClick={handleDeletePic}
+                        >
+                            delete
+                        </span>}
                     </div>
 
                     {/* Marital Status */}
