@@ -1,0 +1,82 @@
+"use client";
+
+import { useState } from "react";
+import PhoneInput from "./PhoneInput";
+import { Member } from "@/lib/definitions";
+import { db } from "@/lib/client/firebaseClient";
+import { doc, updateDoc } from "firebase/firestore";
+import { useRouter } from "next/navigation";
+interface Props {
+    id: string;
+    member: Member;
+}
+export default function EditPhoneNumber({ id, member }: Props) {
+    const [editing, setEditing] = useState(!member.phone);
+    // Always initialize with a string
+    const [phone, setPhone] = useState(member.phone || "");
+    const [value, setValue] = useState(member.phone || "");
+    const router = useRouter();
+
+    async function handleSave() {
+        const ref = doc(db, "members", id);
+
+        await updateDoc(ref, {
+            phone: value,
+            updatedAt: new Date().toISOString(),
+        });
+        window.location.reload();
+    }
+
+    function handleCancel() {
+        setValue(phone);
+        setEditing(false);
+    }
+
+    // --- VIEW MODE ---
+    if (!editing) {
+        return phone ? (
+            <div className="flex items-center gap-3 my-2">
+                <a
+                    href={`tel:${phone}`}
+                    className="flex items-center gap-1 border-2 border-[var(--primary)]/50 text-[var(--primary)] py-2 px-4 rounded-md shadow"
+                >
+                    <span className="material-symbols-outlined">call</span>
+                    <span>{phone}</span>
+                </a>
+
+                <button
+                    onClick={() => setEditing(true)}
+                    className="material-symbols-outlined text-(--primary) cursor-pointer"
+                >
+                    edit
+                </button>
+            </div>
+        ) : (
+            // If no phone → show input immediately
+            <PhoneInput value={value} onChange={setValue} />
+        );
+    }
+
+    // --- EDIT MODE ---
+    return (
+        <div className="flex flex-col gap-3 my-2">
+
+            <div className="flex gap-3">
+                <PhoneInput value={value} onChange={setValue} />
+                <button
+                    onClick={handleSave}
+                    className="material-symbols-outlined"
+                >
+                    Save
+                </button>
+
+                {/* <button
+                    onClick={handleCancel}
+                    className="border border-gray-400 p-2 rounded-md"
+                >
+                    Cancel
+                </button> */}
+            </div>
+        </div>
+    );
+}

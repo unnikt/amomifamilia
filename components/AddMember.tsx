@@ -8,6 +8,7 @@ import { addDoc, collection, updateDoc } from "firebase/firestore";
 import { getDownloadURL, ref, uploadBytes } from "firebase/storage";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
+import PhoneInput from "./PhoneInput";
 
 interface Props {
     onMemberAdded?: () => void;
@@ -15,13 +16,17 @@ interface Props {
 }
 export default function AddMemberForm({ onMemberAdded, isOpen }: Props) {
     const [open, setOpen] = useState(false);
+    const [missing, setMissing] = useState(false);
     const [picSelected, setpicSelected] = useState(false);
     const [profilePic, setProfilePic] = useState<string | null>(null);
+    const [phone, setPhone] = useState("");
+    const [gender, setGender] = useState("");
 
     const [mem, setMem] = useState<Member>({
         name: "",
         gender: "Male",
         dob: "",
+        phone: "",
         whoami: "",
         maritalstat: "Single",
         picUrl: null,
@@ -77,20 +82,27 @@ export default function AddMemberForm({ onMemberAdded, isOpen }: Props) {
 
     async function handleSave() {
         try {
-            console.log("Saving member:", mem);
+            mem.gender = gender as Member["gender"];
+            console.log("Saving member:", mem, gender);
+
+            if (!mem.name || mem.name == "") { setMissing(true); return; };
+            if (!mem.gender) { setMissing(true); return; };
+            setMissing(false);
 
             let picUrl = "";
 
             // Prepare Firestore document
             const docData = {
                 name: toCamelCase(mem.name),
-                gender: mem.gender,
+                gender: gender,
                 dob: mem.dob,
+                phone: phone,
                 whoami: mem.whoami,
                 maritalstat: mem.maritalstat,
                 picUrl: picUrl,
                 createdAt: new Date().toISOString(),
             };
+
 
             // Save to Firestore
             const docRef = await addDoc(collection(db, "members"), docData);
@@ -134,7 +146,7 @@ export default function AddMemberForm({ onMemberAdded, isOpen }: Props) {
             )}
 
             {open && (
-                <div className="max-w-lg mx-auto bg-white shadow-md rounded-lg p-6 space-y-4">
+                <div className="max-w-lg mx-auto bg-white shadow-md border border-slate-300 rounded-lg p-4  space-y-4">
                     <div className="flex justify-between">
                         <h2 className="title">Add New Member</h2>
                         <span
@@ -147,7 +159,9 @@ export default function AddMemberForm({ onMemberAdded, isOpen }: Props) {
 
                     {/* Name */}
                     <div>
-                        <label className="block text-sm font-medium text-gray-700">Name</label>
+                        <label className="block text-sm font-medium text-gray- 700">
+                            Name {missing && <span className="text-red-500"> *required</span>}
+                        </label>
                         <input
                             type="text"
                             className="w-full border rounded p-2"
@@ -173,74 +187,87 @@ export default function AddMemberForm({ onMemberAdded, isOpen }: Props) {
                         >e.g..Actor, Doctor, Dancer, Cat lover, Chef, Mom, Traveller...   </span>
                     </div>
 
-                    {/* Gender */}
                     <div>
-                        <label className="block text-sm font-medium text-gray-700">Gender</label>
-                        <div className="flex gap-6 mt-1">
-                            {["Male", "Female", "Other"].map((g) => (
-                                <label key={g} className="flex items-center gap-2">
-                                    <input
-                                        type="radio"
-                                        name="gender"
-                                        value={g}
-                                        onChange={() =>
-                                            setMem((prev) => ({ ...prev, gender: g as Member["gender"] }))
-                                        }
-                                    />
-                                    <span>{g}</span>
-                                </label>
-                            ))}
-                        </div>
+                        <label className="block text-sm font-medium text-gray-700">Phone</label>
+                        <PhoneInput value={phone} onChange={setPhone} />
                     </div>
 
-                    {/* Profile Pic */}
-                    <div className="flex items-center">
-                        {!picSelected &&
-                            <div className="mt-1">
-                                <label
-                                    htmlFor="profilePicInput"
-                                    className="inline-flex items-center gap-2 px-3 py-2 bg-(--secondary)/80 text-white rounded cursor-pointer hover:opacity-90"
-                                >
-                                    <span className="material-symbols-outlined">upload</span>
-                                    <span>Upload Profile Picture</span>
+                    <div className="flex justify-between gap-2">
+                        <div className="flex flex-col gap-2">
+                            {/* Gender */}
+                            <div>
+                                <label className="block text-sm font-medium text-gray-700">
+                                    Gender
+                                    {missing && <span className="text-red-500"> *required</span>}
                                 </label>
-
+                                <div className="flex gap-1 border p-2 rounded ">
+                                    {["Male", "Female", "Other"].map((g) => (
+                                        <label key={g} className="flex items-center gap-2">
+                                            <input
+                                                type="radio"
+                                                name="gender"
+                                                value={g}
+                                                checked={gender === g}
+                                                onChange={() =>
+                                                    setGender(g as Member["gender"])
+                                                }
+                                            />
+                                            <span>{g}</span>
+                                        </label>
+                                    ))}
+                                </div>
+                            </div>
+                            {/* DOB */}
+                            <div>
+                                <label className="block text-sm font-medium text-gray-700">
+                                    Date of Birth
+                                </label>
                                 <input
-                                    id="profilePicInput"
-                                    type="file"
-                                    accept="image/*"
-                                    onChange={handleImage}
-                                    className="hidden"
+                                    type="date"
+                                    className="w-full border rounded p-2"
+                                    onChange={(e) =>
+                                        setMem((prev) => ({ ...prev, dob: e.target.value }))
+                                    }
                                 />
-                            </div>}
+                            </div>
+                        </div>
 
-                        {profilePic && (
-                            <img
-                                src={profilePic}
-                                alt="Preview"
-                                className="w-32 h-32 object-cover rounded-md border"
-                            />
-                        )}
-                        {picSelected && <span
-                            className="material-symbols-outlined btn-material-icon text-slate-400! cursor-pointer"
-                            onClick={handleDeletePic}
-                        >
-                            delete
-                        </span>}
-                    </div>
 
-                    {/* DOB */}
-                    <div>
-                        <label className="block text-sm font-medium text-gray-700">
-                            Date of Birth
-                        </label>
-                        <input
-                            type="date"
-                            className="w-full border rounded p-2"
-                            onChange={(e) =>
-                                setMem((prev) => ({ ...prev, dob: e.target.value }))
-                            }
-                        />
+                        {/* Profile Pic */}
+                        <div className="flex items-center">
+                            {!picSelected &&
+                                <div className="mt-1">
+                                    <label
+                                        htmlFor="profilePicInput"
+                                        className="h-32 w-32 mr-2  inline-flex items-center gap-2 p-3  bg-slate-400 text-white rounded cursor-pointer hover:opacity-90"
+                                    >
+                                        <span className="material-symbols-outlined">upload</span>
+                                        <span>Upload Profile Picture</span>
+                                    </label>
+
+                                    <input
+                                        id="profilePicInput"
+                                        type="file"
+                                        accept="image/*"
+                                        onChange={handleImage}
+                                        className="hidden"
+                                    />
+                                </div>}
+
+                            {profilePic && (
+                                <img
+                                    src={profilePic}
+                                    alt="Preview"
+                                    className="w-32 h-32 mr-2 object-cover rounded-md border border-slate-400"
+                                />
+                            )}
+                            {picSelected && <span
+                                className="material-symbols-outlined  text-slate-400! cursor-pointer"
+                                onClick={handleDeletePic}
+                            >
+                                delete
+                            </span>}
+                        </div>
                     </div>
 
                     {/* Marital Status */}

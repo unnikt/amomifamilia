@@ -15,9 +15,12 @@ export default function HomeClient() {
         setOpen(false)
     }
     return (
-        <div className="flex flex-col justify-center align-middle gap-2">
+        <div className="flex flex-col justify-center align-middle gap-2  w-fit mx-auto p-2 rounded">
             {!open &&
-                <div className="mt-10 border border-slate-200 w-fit mx-auto p-8 rounded shadow">
+                <div className="mt-10 w-fit mx-auto rounded ">
+                    <img src="/famili.svg"
+                        className="w-60 mb-3" />
+
                     <p className="title text-center">Search a member</p>
                     <MemberSearch onSelect={(name) => router.push(`/members/${name}`)} />
 
