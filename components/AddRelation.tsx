@@ -93,7 +93,7 @@ export default function AddRelation({ memberId, name, gender, onClose }: Props) 
     }
 
     return (
-        <div className="p-2 bg-white  space-y-1">
+        <div className="p-2 space-y-1 border border-slate-300 rounded p-4">
             <div className="flex justify-between items-center py-2">
                 <h3 className="text-lg font-semibold mb-1">Add relation</h3>
                 <button

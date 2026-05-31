@@ -14,7 +14,7 @@ interface Props {
 }
 export default function RelationsClient({ id, member }: Props) {
     const router = useRouter();
-    const [show, setShow] = useState(false)
+    const [show, setShow] = useState(true)
     const [loading, setLoading] = useState(true)
     const [relations, setRelations] = useState<
         { id: string; name: string; type: string }[]
@@ -63,54 +63,56 @@ export default function RelationsClient({ id, member }: Props) {
     return (
         <div>
             {/* Relations Section */}
-            < div className=" p-2  bg-gray-100 " >
-                <div className="flex justify-between items-center py-2">
-                    <h3 className="text-lg font-semibold mb-1">Family</h3>
-                    <button
-                        className="material-symbols-outlined text-(--primary)/70"
-                        onClick={() => setShow(true)}
-                    >
-                        person_add
-                    </button>
-                </div>
-
-                {loading ? <p className="text-gray-500 text-sm">loading...</p> :
-                    relations.length === 0 && (
-                        <p className="text-gray-500 text-sm">No relations added.</p>
-                    )
-                }
-                <ul className="space-y-1">
-                    {relations.map((r, idx) => (
-                        <li
-                            key={r.id}
-                            className="flex justify-between items-center gap-2"
+            {show ?
+                < div className=" p-2  bg-gray-100 " >
+                    <div className="flex justify-between items-center py-2">
+                        <h3 className="text-lg font-semibold mb-1">Family</h3>
+                        <button
+                            className="material-symbols-outlined text-(--primary)/70"
+                            onClick={() => setShow(false)}
                         >
-                            {/* Left side: relation type + link */}
-                            {/* <div className="flex flex-col"> */}
-                            <span className="font-medium w-28">{r.type}</span>
-                            <Link
-                                href={`/members/${r.name}`}
-                                className="text-blue-600 hover:underline text-sm flex-1"
-                            >
-                                {r.name}
-                            </Link>
-                            {/* </div> */}
+                            person_add
+                        </button>
+                    </div>
 
-                            {/* Delete button */}
-                            <button
-                                onClick={() => onDeleteRelation(idx)}
-                                className="material-symbols-outlined text-slate-500 w-8"
+                    {loading ? <p className="text-gray-500 text-sm">loading...</p> :
+                        relations.length === 0 && (
+                            <p className="text-gray-500 text-sm">No relations added.</p>
+                        )
+                    }
+                    <ul className="space-y-1">
+                        {relations.map((r, idx) => (
+                            <li
+                                key={r.id}
+                                className="flex justify-between items-center gap-2"
                             >
-                                delete
-                            </button>
-                        </li>
-                    ))}
-                </ul>
+                                {/* Left side: relation type + link */}
+                                {/* <div className="flex flex-col"> */}
+                                <span className="font-medium w-28">{r.type}</span>
+                                <Link
+                                    href={`/members/${r.name}`}
+                                    className="text-blue-600 hover:underline text-sm flex-1"
+                                >
+                                    {r.name}
+                                </Link>
+                                {/* </div> */}
 
-            </div >
-            {show && <AddRelation
-                memberId={id} name={member.name} gender={member.gender}
-                onClose={() => setShow(false)} />
+                                {/* Delete button */}
+                                <button
+                                    onClick={() => onDeleteRelation(idx)}
+                                    className="material-symbols-outlined text-slate-500 w-8"
+                                >
+                                    delete
+                                </button>
+                            </li>
+                        ))}
+                    </ul>
+
+                </div >
+                :
+                <AddRelation
+                    memberId={id} name={member.name} gender={member.gender}
+                    onClose={() => setShow(true)} />
             }
         </div>
     )
