@@ -1,8 +1,11 @@
 "use client"
 import AddRelation from "@/components/AddRelation";
+import { db } from "@/lib/client/firebaseClient";
 import { Member } from "@/lib/definitions";
 import { getMembersByIds } from "@/lib/getMembersById";
+import { arrayRemove, doc, updateDoc } from "firebase/firestore";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 
 interface Props {
@@ -10,6 +13,7 @@ interface Props {
     member: Member;
 }
 export default function RelationsClient({ id, member }: Props) {
+    const router = useRouter();
     const [show, setShow] = useState(false)
     const [relations, setRelations] = useState<
         { id: string; name: string; type: string }[]
@@ -37,6 +41,23 @@ export default function RelationsClient({ id, member }: Props) {
         loadRelations();
     }, [member]);
 
+    async function onDeleteRelation(idx: number) {
+        const r = relations[idx];
+
+        const currentRef = doc(db, "members", id);
+        // Remove from current member
+        await updateDoc(currentRef, {
+            relations: arrayRemove({
+                memberId: r.id,
+                type: r.type,
+            }),
+        }).then(() => {
+            router.push(`/members/${member.name}`)
+        });
+
+        // setRelations(prev => prev.filter(r => r.id !== id));
+    }
+
 
     return (
         <div>
@@ -57,21 +78,34 @@ export default function RelationsClient({ id, member }: Props) {
                         <p className="text-gray-500 text-sm">No relations added.</p>
                     )
                 }
-
                 <ul className="space-y-1">
-                    {relations.map((r) => (
-                        <li key={r.id} className="flex justify-between items-center">
-                            <span className="font-medium">{r.type}</span>
-
+                    {relations.map((r, idx) => (
+                        <li
+                            key={r.id}
+                            className="flex justify-between items-center gap-2"
+                        >
+                            {/* Left side: relation type + link */}
+                            {/* <div className="flex flex-col"> */}
+                            <span className="font-medium w-28">{r.type}</span>
                             <Link
                                 href={`/members/${r.name}`}
-                                className="text-blue-600 hover:underline text-sm"
+                                className="text-blue-600 hover:underline text-sm flex-1"
                             >
                                 {r.name}
                             </Link>
+                            {/* </div> */}
+
+                            {/* Delete button */}
+                            <button
+                                onClick={() => onDeleteRelation(idx)}
+                                className="material-symbols-outlined text-slate-500 w-8"
+                            >
+                                delete
+                            </button>
                         </li>
                     ))}
                 </ul>
+
             </div >
             {show && <AddRelation
                 memberId={id} name={member.name} gender={member.gender}

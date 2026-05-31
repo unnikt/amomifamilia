@@ -17,7 +17,7 @@ export default function HomeClient() {
     return (
         <div className="flex flex-col justify-center align-middle gap-2">
             {!open &&
-                <div>
+                <div className="mt-10 border border-slate-200 w-fit mx-auto p-8 rounded shadow">
                     <p className="title text-center">Search a member</p>
                     <MemberSearch onSelect={(name) => router.push(`/members/${name}`)} />
 

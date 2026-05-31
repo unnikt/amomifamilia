@@ -3,9 +3,8 @@
 import { db, storage } from "@/lib/client/firebaseClient";
 import { Member } from "@/lib/definitions";
 import { toCamelCase } from "@/lib/string/camelcase";
-import { slugify } from "@/lib/string/slugify";
 import { getAuth, onAuthStateChanged } from "firebase/auth";
-import { addDoc, collection } from "firebase/firestore";
+import { addDoc, collection, updateDoc } from "firebase/firestore";
 import { getDownloadURL, ref, uploadBytes } from "firebase/storage";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
@@ -82,13 +81,6 @@ export default function AddMemberForm({ onMemberAdded, isOpen }: Props) {
 
             let picUrl = "";
 
-            // Upload profile picture if exists.
-            if (mem.picUrl) {
-                const storageRef = ref(storage, `members/${Date.now()}_${slugify(mem.name)}`);
-                await uploadBytes(storageRef, mem.picUrl);
-                picUrl = await getDownloadURL(storageRef);
-            }
-
             // Prepare Firestore document
             const docData = {
                 name: toCamelCase(mem.name),
@@ -102,6 +94,16 @@ export default function AddMemberForm({ onMemberAdded, isOpen }: Props) {
 
             // Save to Firestore
             const docRef = await addDoc(collection(db, "members"), docData);
+
+            // Upload profile picture if exists.
+            if (mem.picUrl) {
+                const storageRef = ref(storage, `members/${docRef.id}_profile.jpg`);
+                await uploadBytes(storageRef, mem.picUrl);
+                picUrl = await getDownloadURL(storageRef);
+
+                // 3️⃣ Update Firestore with the REAL picUrl
+                await updateDoc(docRef, { picUrl });
+            }
 
             console.log("Saved Member with ID:", docRef.id);
             router.push(`/members/${mem.name}`)
@@ -158,15 +160,17 @@ export default function AddMemberForm({ onMemberAdded, isOpen }: Props) {
 
                     {/* Who am I */}
                     <div>
-                        <label className="block text-sm font-medium text-gray-700">Who am I</label>
+                        <label className="block text-sm font-medium text-gray-700">I am a</label>
                         <input
                             type="text"
                             className="w-full border rounded p-2"
-                            placeholder="Doctor, Engineer, Singer..."
                             onChange={(e) =>
                                 setMem((prev) => ({ ...prev, whoami: e.target.value }))
                             }
                         />
+                        <span
+                            className="text-sm text-slate-500 italic"
+                        >e.g..Actor, Doctor, Dancer, Cat lover, Chef, Mom, Traveller...   </span>
                     </div>
 
                     {/* Gender */}
@@ -190,7 +194,7 @@ export default function AddMemberForm({ onMemberAdded, isOpen }: Props) {
                     </div>
 
                     {/* Profile Pic */}
-                    <div className="flex justify-center items-center">
+                    <div className="flex items-center">
                         {!picSelected &&
                             <div className="mt-1">
                                 <label
