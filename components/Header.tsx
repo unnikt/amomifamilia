@@ -12,17 +12,17 @@ export default function Header() {
     const [open, setOpen] = useState(false)
     const menuRef = useRef(null);
     return (
-        <div>
+        <div >
             <div className="p-2 flex justify-between items-center bg-(--primary)">
-                <div ref={menuRef} className="relative">
+                {/* <div ref={menuRef} className="relative hidden">
                     <span
                         className="material-symbols-outlined btn-material-icon"
                         onClick={() => setOpen(prev => !prev)}>menu</span>
 
                     {open && <MainMenu onClose={() => setOpen(false)} />}
-                </div>
+                </div> */}
                 <Link href="/"
-                    className="flex gap-1 items-center">
+                    className="flex gap-2 items-center">
                     <span className="material-symbols-outlined btn-material-icon">family_group</span>
                     <h2 className="text-2xl  tracking-wide text-(--text)">
                         mifamili
@@ -32,7 +32,7 @@ export default function Header() {
                     <UserAvatarLink />
                 </div>
             </div>
-            <div className="flex justify-center p-2">
+            <div className="flex justify-center p-2 bg-slate-100">
                 <button
                     className="material-symbols-outlined rounded text-(--primary)"
                     onClick={() => router.back()}>

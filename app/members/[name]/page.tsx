@@ -33,7 +33,7 @@ export default async function MemberPage({ params }: { params: Promise<{ name: s
     const id = snaps.docs[0].id;
 
     return (
-        <div className="w-full sm:max-w-2xl mx-auto sm:shadow rounded-lg space-y-2 sm:border border-slate-300 p-4">
+        <div className="w-full sm:max-w-2xl mx-auto  space-y-2 px-6 h-screen">
             <div className="flex justify-between">
                 <h1 className="text-2xl font-bold">{member.name}</h1>
                 <DeleteMemberButton id={id} />

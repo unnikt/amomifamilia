@@ -15,9 +15,9 @@ export default function HomeClient() {
         setOpen(false)
     }
     return (
-        <div className="flex flex-col justify-center align-middle gap-2  w-fit mx-auto p-2 rounded">
+        <div className="flex flex-col justify-start align-middle gap-2 p-2 rounded h-screen">
             {!open &&
-                <div className="mt-10 w-fit mx-auto rounded ">
+                <div className="w-fit mx-auto rounded">
                     <img src="/famili.svg"
                         className="w-60 mb-3" />
 

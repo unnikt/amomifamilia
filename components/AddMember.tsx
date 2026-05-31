@@ -127,9 +127,9 @@ export default function AddMemberForm({ onMemberAdded, isOpen }: Props) {
     }
 
     return (
-        <div className="mx-auto  sm:min-w-3xl sm:mt-3">
+        <div className="mx-auto  ">
             {!open && (
-                <div className="w-fit mx-auto">
+                <div className="w-full mx-auto">
                     <button
                         className="flex flex-col gap-2 bg-(--primary) p-4 text-white m-2 rounded shadow-lg"
                         onClick={handleOpen}
