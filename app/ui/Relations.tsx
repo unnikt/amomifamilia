@@ -70,7 +70,7 @@ export default function RelationsClient({ id, member }: Props) {
                     <div className="flex justify-between items-center py-2">
                         <h3 className="text-lg font-semibold mb-1">Family</h3>
                         <button
-                            className="material-symbols-outlined text-(--primary)/70"
+                            className="material-symbols-outlined text-(--primary)/70 w-8"
                             onClick={() => setShow(false)}
                         >
                             person_add
@@ -90,9 +90,9 @@ export default function RelationsClient({ id, member }: Props) {
                             >
                                 {/* Left side: relation type + link */}
                                 {/* <div className="flex flex-col"> */}
-                                <span className="font-medium w-16">{r.type}</span>
+                                <span className="font-medium w-18 text-(--gray)">{r.type}</span>
                                 <Link
-                                    href={`/members/${r.name}`}
+                                    href={`/members/${r.id}`}
                                     className="text-blue-600 hover:underline text-sm flex-1"
                                 >
                                     {r.name}
@@ -102,9 +102,9 @@ export default function RelationsClient({ id, member }: Props) {
                                 {/* Delete button */}
                                 <button
                                     onClick={() => onDeleteRelation(idx)}
-                                    className="material-symbols-outlined text-slate-500 w-8"
+                                    className="material-symbols-outlined text-(--gray)   w-8 "
                                 >
-                                    delete
+                                    link_off
                                 </button>
                             </li>
                         ))}

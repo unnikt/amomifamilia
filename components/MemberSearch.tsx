@@ -45,7 +45,7 @@ export default function MemberSearch({ onSelect }: Props) {
                                     setSelectedMember(m.id);
                                     setSearchTerm(m.name);
                                     setSuggestions([]);
-                                    if (onSelect) onSelect(m.name);
+                                    if (onSelect) onSelect(m.id);
                                 }}
                             >
                                 {m.name}{" "}

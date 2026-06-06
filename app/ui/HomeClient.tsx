@@ -24,7 +24,7 @@ export default function HomeClient() {
                             className="w-60 mb-6" />
 
                         <p className="title text-center">Search a member</p>
-                        <MemberSearch onSelect={(name) => router.push(`/members/${name}`)} />
+                        <MemberSearch onSelect={(docid) => router.push(`/members/${docid}`)} />
 
                         <Link
                             href="/family"

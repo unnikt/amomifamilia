@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import PhoneInput from "./PhoneInput";
 import { Member } from "@/lib/definitions";
 import { db } from "@/lib/client/firebaseClient";
@@ -13,12 +13,20 @@ interface Props {
     member: Member;
     field?: "name" | "whoami" | "maritalstat" | "gender" | "dob" | "doe";
     className?: string;
+    onClose?: (name: string) => void;
 }
-export default function EditMember({ id, member, field, className }: Props) {
+export default function EditMember({ id, member, field, className, onClose }: Props) {
     const [editing, setEditing] = useState(false); // Start in edit mode if field is empty
     // Always initialize with a string
     const [value, setValue] = useState("");
     const router = useRouter();
+
+    useEffect(() => {
+        if (field) {
+            const initialValue = member[field as keyof Member] as string;
+            setValue(initialValue);
+        }
+    }, [member, field]);
 
     async function handleSave() {
         const ref = doc(db, DB_MEMBERS, id);
@@ -28,7 +36,10 @@ export default function EditMember({ id, member, field, className }: Props) {
                 [field]: value,
                 updatedAt: new Date().toISOString(),
             });
-        window.location.reload();
+        setEditing(false);
+        setValue(value);
+        if (onClose)
+            (field == "name") ? onClose(value) : onClose(member.name);
     }
 
     function handleCancel() {
@@ -41,7 +52,7 @@ export default function EditMember({ id, member, field, className }: Props) {
         return (
             <div className="flex gap-2 items-center">
                 <span className={`${className} min-w-30`}>
-                    {member[field as keyof Member] as string || "No value"}
+                    {value || "No value"}
                 </span>
                 <button
                     onClick={() => { setEditing(true); setValue(member[field as keyof Member] as string || "") }}

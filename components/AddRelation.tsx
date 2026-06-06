@@ -106,8 +106,9 @@ export default function AddRelation({ memberId, member, name, gender, onClose }:
             }),
         });
 
+        setSearchTerm("");
         setMessage("Relation added successfully!");
-        router.push(`/members/${member.name}`);
+        router.push(`/members/${memberId}`);
     }
 
     return (
@@ -128,7 +129,7 @@ export default function AddRelation({ memberId, member, name, gender, onClose }:
                 <select
                     className="mt-1 w-full border rounded p-2"
                     value={relation}
-                    onChange={(e) => { setRelation(e.target.value as RelationType); setMessage(""); }}
+                    onChange={(e) => { setRelation(e.target.value as RelationType); setMessage(""); setSearchTerm(""); }}
                 >
                     <option value="">Choose relation</option>
                     {RELATIONS.map((r) => (

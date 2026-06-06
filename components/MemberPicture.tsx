@@ -74,16 +74,17 @@ export default function MemberPicture({ id, member }: Props) {
             />
             <Modal title="Update Profile Picture" isOpen={open} onClose={() => setOpen(false)}>
                 <div className="flex flex-col p-4 ">
-                    <img
+                    {preview && <img
                         src={preview}
                         alt="Preview"
                         className="w-100 h-100 object-cover rounded-md border border-slate-400 mx-auto "
                     />
+                    }
                     <button
                         onClick={handleClick}
                         className="bg-(--primary) text-white px-4 py-2 m-2 rounded mx-auto"
                     >
-                        Change picture
+                        {preview ? "Change" : "Upload"} picture
                     </button>
                 </div>
             </Modal>
