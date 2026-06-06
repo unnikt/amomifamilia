@@ -7,6 +7,7 @@ import MemberPicture from "@/components/MemberPicture";
 import DeleteMemberButton from "@/components/DeleteMemberButton";
 import EditPhoneNumber from "@/components/EditPhoneNumber";
 import { DB_MEMBERS } from "@/lib/const/database";
+import EditMember from "@/components/EditMember";
 
 export default async function MemberPage({ params }: { params: Promise<{ name: string }> }) {
     const { name } = await params;
@@ -33,18 +34,20 @@ export default async function MemberPage({ params }: { params: Promise<{ name: s
     return (
         <div className="w-full sm:max-w-2xl mx-auto  space-y-2 px-6 h-screen">
             <div className="flex justify-between">
-                <h1 className="flex align-items-center text-xl font-bold">{member.name}
-                    <p>{member.alive === "No" && <span className="material-symbols-outlined text-pink-500 pl-2">deceased</span>}</p>
-                </h1>
+                <EditMember id={id} member={member} field="name" className="text-2xl font-medium " />
                 <DeleteMemberButton id={id} />
             </div>
             <div className="flex justify-start gap-2 items-center">
-                <MemberPicture id={id} member={member} />
+                <div className="relative flex flex-col items-center">
+                    <MemberPicture id={id} member={member} />
+                    <i className="absolute bottom-0 text-white ">Click to preview</i>
+                </div>
                 <div className="space-y-1 text-gray-700 flex-1">
-                    <p>{member.whoami}</p>
-                    <p>{member.maritalstat}</p>
-                    <p>{member.gender}</p>
-                    <p>{member.dob}</p>
+                    <EditMember id={id} member={member} field="whoami" />
+                    <EditMember id={id} member={member} field="maritalstat" />
+                    <EditMember id={id} member={member} field="gender" />
+                    <EditMember id={id} member={member} field="dob" />
+                    <EditMember id={id} member={member} field="doe" />
                 </div>
             </div>
             <EditPhoneNumber id={id} member={member} />

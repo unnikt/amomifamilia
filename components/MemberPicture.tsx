@@ -6,12 +6,14 @@ import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
 import { db, storage } from "@/lib/client/firebaseClient";
 import { Member } from "@/lib/definitions";
 import { DB_MEMBERS } from "@/lib/const/database";
+import Modal from "./Modal";
 
 interface Props {
     id: string;
     member: Member;
 }
 export default function MemberPicture({ id, member }: Props) {
+    const [open, setOpen] = useState(false);
     const fileInputRef = useRef<HTMLInputElement>(null);
     const [preview, setPreview] = useState(member.picUrl || "");
 
@@ -46,7 +48,7 @@ export default function MemberPicture({ id, member }: Props) {
     return (
         <div className="flex justify-start gap-2 items-center">
             <div
-                onClick={handleClick}
+                onClick={() => setOpen(true)}
                 className="cursor-pointer"
             >
                 {preview ? (
@@ -70,6 +72,21 @@ export default function MemberPicture({ id, member }: Props) {
                 onChange={handleFileChange}
                 className="hidden"
             />
+            <Modal title="Update Profile Picture" isOpen={open} onClose={() => setOpen(false)}>
+                <div className="flex flex-col p-4 ">
+                    <img
+                        src={preview}
+                        alt="Preview"
+                        className="w-100 h-100 object-cover rounded-md border border-slate-400 mx-auto "
+                    />
+                    <button
+                        onClick={handleClick}
+                        className="bg-(--primary) text-white px-4 py-2 m-2 rounded mx-auto"
+                    >
+                        Change picture
+                    </button>
+                </div>
+            </Modal>
         </div>
     );
 }

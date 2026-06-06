@@ -17,8 +17,8 @@ const Modal: React.FC<ModalProps> = ({ title, isOpen, onClose, children, w, h })
             <div className={`${w ? w : "w-80vw"} ${h ? h : "h-90vh"} bg-(--surface) max-h-[90vh] overflow-y-auto max-w-[90vw] 
             rounded-md shadow-lg relative animate-[fadeIn_0.2s_ease-out]`}>
                 {/* Close Button */}
-                <div className="flex justify-between align-middle p-2">
-                    <p className="p-2">{title}</p>
+                <div className="flex justify-between align-middle p-2 bg-(--primary)/80 text-white rounded-tl-md rounded-tr-md">
+                    <p className="p-2 font-medium text-xl">{title}</p>
                     <button
                         onClick={onClose}
                         className="material-symbols-outlined"
