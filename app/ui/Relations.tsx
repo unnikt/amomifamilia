@@ -21,6 +21,16 @@ export default function RelationsClient({ id, member }: Props) {
         { id: string; name: string; type: string }[]
     >([]);
 
+    const priority: Record<string, number> = {
+        father: 1,
+        mother: 2,
+        husband: 3,
+        wife: 3,
+        sibling: 4,
+        child: 5,
+    };
+
+
     useEffect(() => {
         async function loadRelations() {
             if (!member?.relations) return;
@@ -37,7 +47,13 @@ export default function RelationsClient({ id, member }: Props) {
                 };
             });
 
-            setRelations(merged);
+            const sorted = [...merged].sort((a, b) => {
+                const pa = priority[a.type.toLowerCase()] ?? 999;
+                const pb = priority[b.type.toLowerCase()] ?? 999;
+                return pa - pb;
+            });
+            console.log(sorted);
+            setRelations(sorted);
             setLoading(false);
         }
 
