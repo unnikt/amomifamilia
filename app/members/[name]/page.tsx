@@ -29,7 +29,6 @@ export default async function MemberPage({ params }: { params: Promise<{ name: s
 
     const member = snaps.docs[0].data() as Member;
     const id = snaps.docs[0].id;
-    console.log("Member Data:", member);
 
     return (
         <div className="w-full sm:max-w-2xl mx-auto  space-y-2 px-6 h-screen">

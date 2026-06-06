@@ -86,10 +86,6 @@ export default function AddRelation({ memberId, member, name, gender, onClose }:
         const otherSnap = await getDoc(otherRef);
         const otherMember = otherSnap.data() as Member;
 
-        // Determine reverse relation based on gender
-        const reverse = getReverseRelation(relation, otherMember.gender);
-        console.log(otherMember.name, otherMember.gender, "is ", relation, " of ", member.name, gender, "is ", reverse,);
-
         // 1. Add relation to main member
         await updateDoc(mainRef, {
             relations: arrayUnion({
@@ -97,6 +93,10 @@ export default function AddRelation({ memberId, member, name, gender, onClose }:
                 type: relation,
             }),
         });
+
+        // Determine reverse relation based on gender
+        const reverse = getReverseRelation(relation, gender);
+        console.log(otherMember.name, otherMember.gender, "is ", relation, " of ", member.name, gender, "is ", reverse,);
 
         // 2. Add reverse relation to the other member
         await updateDoc(otherRef, {

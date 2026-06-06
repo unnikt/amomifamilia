@@ -6,6 +6,7 @@
   --foreground: #171717;
   --primary: #6002ee;
   --text: white;
+  --gray: var(--color-slate-500);
   --secondary: #138288;
   --bg: var(--color-slate-400);
   --surface: var(--color-slate-200);
