@@ -1,4 +1,4 @@
-export default function getReverseRelation(relation: string, otherGender: string): string {
+export default function getReverseRelationOld(relation: string, otherGender: string): string {
     switch (relation) {
         case "Father":
         case "Mother":

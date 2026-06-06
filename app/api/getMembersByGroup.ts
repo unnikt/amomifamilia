@@ -8,13 +8,14 @@ import {
     getDocs,
 } from "firebase/firestore";
 import { Member } from "@/lib/definitions";
-import { DB_MEMBERS } from "@/lib/const/database";
 
-export async function getMembersByName(term: string): Promise<(Member & { id: string })[]> {
+export async function getMembersByName(term: string, group: string): Promise<(Member & { id: string })[]> {
+    if (!group.trim()) return [];
     if (!term.trim()) return [];
 
     const q = query(
-        collection(db, DB_MEMBERS),
+        collection(db, process.env.DB_MEMBER_COLLECTION || "members"),
+        where("groups", "array-contains", group),
         orderBy("name"),
         where("name", ">=", term),
         where("name", "<=", term + "\uf8ff"),

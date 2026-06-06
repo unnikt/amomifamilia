@@ -5,6 +5,7 @@ import { doc, updateDoc } from "firebase/firestore";
 import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
 import { db, storage } from "@/lib/client/firebaseClient";
 import { Member } from "@/lib/definitions";
+import { DB_MEMBERS } from "@/lib/const/database";
 
 interface Props {
     id: string;
@@ -36,7 +37,7 @@ export default function MemberPicture({ id, member }: Props) {
         const downloadUrl = await getDownloadURL(storageRef);
 
         // Save to Firestore
-        const memberRef = doc(db, "members", id);
+        const memberRef = doc(db, DB_MEMBERS, id);
         await updateDoc(memberRef, { picUrl: downloadUrl });
 
         setPreview(downloadUrl);

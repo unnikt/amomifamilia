@@ -1,6 +1,7 @@
 "use client"
 import AddRelation from "@/components/AddRelation";
 import { db } from "@/lib/client/firebaseClient";
+import { DB_MEMBERS } from "@/lib/const/database";
 import { Member } from "@/lib/definitions";
 import { getMembersByIds } from "@/lib/getMembersById";
 import { arrayRemove, doc, updateDoc } from "firebase/firestore";
@@ -15,7 +16,7 @@ interface Props {
 export default function RelationsClient({ id, member }: Props) {
     const router = useRouter();
     const [show, setShow] = useState(true)
-    const [loading, setLoading] = useState(true)
+    const [loading, setLoading] = useState(false)
     const [relations, setRelations] = useState<
         { id: string; name: string; type: string }[]
     >([]);
@@ -23,6 +24,7 @@ export default function RelationsClient({ id, member }: Props) {
     useEffect(() => {
         async function loadRelations() {
             if (!member?.relations) return;
+            setLoading(true);
             const ids = member.relations.map((r: any) => r.memberId);
             const relatedMembers = await getMembersByIds(ids);
 
@@ -45,7 +47,7 @@ export default function RelationsClient({ id, member }: Props) {
     async function onDeleteRelation(idx: number) {
         const r = relations[idx];
 
-        const currentRef = doc(db, "members", id);
+        const currentRef = doc(db, DB_MEMBERS, id);
         // Remove from current member
         await updateDoc(currentRef, {
             relations: arrayRemove({
@@ -111,7 +113,7 @@ export default function RelationsClient({ id, member }: Props) {
                 </div >
                 :
                 <AddRelation
-                    memberId={id} name={member.name} gender={member.gender}
+                    memberId={id} member={member} name={member.name} gender={member.gender}
                     onClose={() => setShow(true)} />
             }
         </div>

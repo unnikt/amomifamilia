@@ -9,6 +9,8 @@ import { getDownloadURL, ref, uploadBytes } from "firebase/storage";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import PhoneInput from "./PhoneInput";
+import { getMyFamilies } from "@/lib/firestore/getMyFamilies";
+import { DB_MEMBERS } from "@/lib/const/database";
 
 interface Props {
     onMemberAdded?: () => void;
@@ -21,20 +23,44 @@ export default function AddMemberForm({ onMemberAdded, isOpen }: Props) {
     const [profilePic, setProfilePic] = useState<string | null>(null);
     const [phone, setPhone] = useState("");
     const [gender, setGender] = useState("");
+    const [picFile, setPicFile] = useState<File | null>(null);
+    const [families, setFamilies] = useState<any[]>([]);
+    const [selectedFamily, setSelectedFamily] = useState("");
+    const [loadingFamilies, setLoadingFamilies] = useState(true);
 
     const [mem, setMem] = useState<Member>({
         name: "",
         gender: "Male",
         dob: "",
+        doe: "",
+        alive: "Yes",
         phone: "",
         whoami: "",
         maritalstat: "Single",
         picUrl: null,
+        families: [],
+        relations: [],
+        createdAt: "",
     });
     const router = useRouter();
 
     useEffect(() => {
         const auth = getAuth();
+        const user = auth.currentUser;
+
+        if (!user) {
+            setLoadingFamilies(false);
+            return;
+        }
+
+        async function load() {
+            if (!user) return;
+            const data = await getMyFamilies(user.uid);
+            setFamilies(data);
+            setLoadingFamilies(false);
+        }
+
+        load();
 
         const unsub = onAuthStateChanged(auth, (user) => {
             if (user) {
@@ -54,11 +80,7 @@ export default function AddMemberForm({ onMemberAdded, isOpen }: Props) {
         if (file) {
             const url = URL.createObjectURL(file);
             setProfilePic(url);
-
-            setMem((prev) => ({
-                ...prev,
-                picUrl: file,
-            }));
+            setPicFile(file);
             setpicSelected(true);
         }
     }
@@ -83,6 +105,7 @@ export default function AddMemberForm({ onMemberAdded, isOpen }: Props) {
     async function handleSave() {
         try {
             mem.gender = gender as Member["gender"];
+            mem.alive = mem.alive as Member["alive"];
             console.log("Saving member:", mem, gender);
 
             if (!mem.name || mem.name == "") { setMissing(true); return; };
@@ -96,6 +119,8 @@ export default function AddMemberForm({ onMemberAdded, isOpen }: Props) {
                 name: toCamelCase(mem.name),
                 gender: gender,
                 dob: mem.dob,
+                doe: mem.doe,
+                alive: mem.alive,
                 phone: phone,
                 whoami: mem.whoami,
                 maritalstat: mem.maritalstat,
@@ -105,12 +130,12 @@ export default function AddMemberForm({ onMemberAdded, isOpen }: Props) {
 
 
             // Save to Firestore
-            const docRef = await addDoc(collection(db, "members"), docData);
+            const docRef = await addDoc(collection(db, DB_MEMBERS), docData);
 
             // Upload profile picture if exists.
             if (mem.picUrl) {
                 const storageRef = ref(storage, `members/${docRef.id}_profile.jpg`);
-                await uploadBytes(storageRef, mem.picUrl);
+                await uploadBytes(storageRef, picFile!);
                 picUrl = await getDownloadURL(storageRef);
 
                 // 3️⃣ Update Firestore with the REAL picUrl
@@ -131,16 +156,10 @@ export default function AddMemberForm({ onMemberAdded, isOpen }: Props) {
             {!open && (
                 <div className="w-full mx-auto">
                     <button
-                        className="flex flex-col gap-2 bg-(--primary) p-4 text-white m-2 rounded shadow-lg"
+                        className="text-(--primary)"
                         onClick={handleOpen}
                     >
-                        <span
-                            className="material-symbols-outlined btn-material-icons">
-                            person_add
-                        </span>
-                        <span>
-                            Add a member
-                        </span>
+                        Add a member
                     </button>
                 </div>
             )}
@@ -230,7 +249,33 @@ export default function AddMemberForm({ onMemberAdded, isOpen }: Props) {
                             />
                         </div>
                     </div>
+                    {/* Family Dropdown */}
+                    <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-1">
+                            Select Family
+                        </label>
 
+                        {loadingFamilies ? (
+                            <p className="text-sm text-gray-500">Loading families…</p>
+                        ) : families.length === 0 ? (
+                            <p className="text-sm text-gray-500">
+                                You haven’t created any families yet.
+                            </p>
+                        ) : (
+                            <select
+                                value={selectedFamily}
+                                onChange={(e) => setSelectedFamily(e.target.value)}
+                                className="w-full border rounded px-3 py-2"
+                            >
+                                <option value="">Choose a family</option>
+                                {families.map((fam) => (
+                                    <option key={fam.id} value={fam.id}>
+                                        {fam.name}
+                                    </option>
+                                ))}
+                            </select>
+                        )}
+                    </div>
 
                     {/* Profile Pic */}
                     <div className="flex items-center w-32 shrink-0">

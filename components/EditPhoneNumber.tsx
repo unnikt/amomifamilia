@@ -6,6 +6,7 @@ import { Member } from "@/lib/definitions";
 import { db } from "@/lib/client/firebaseClient";
 import { doc, updateDoc } from "firebase/firestore";
 import { useRouter } from "next/navigation";
+import { DB_MEMBERS } from "@/lib/const/database";
 interface Props {
     id: string;
     member: Member;
@@ -18,7 +19,7 @@ export default function EditPhoneNumber({ id, member }: Props) {
     const router = useRouter();
 
     async function handleSave() {
-        const ref = doc(db, "members", id);
+        const ref = doc(db, DB_MEMBERS, id);
 
         await updateDoc(ref, {
             phone: value,

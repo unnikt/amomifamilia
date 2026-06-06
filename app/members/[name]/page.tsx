@@ -4,11 +4,9 @@ import { adminDB } from "@/lib/server/firebaseAdmin";
 import RelationsClient from "@/app/ui/Relations";
 import { Member } from "@/lib/definitions";
 import MemberPicture from "@/components/MemberPicture";
-import { storage } from "firebase-admin";
-import { deleteObject, ref } from "firebase/storage";
 import DeleteMemberButton from "@/components/DeleteMemberButton";
-import PhoneInput from "@/components/PhoneInput";
 import EditPhoneNumber from "@/components/EditPhoneNumber";
+import { DB_MEMBERS } from "@/lib/const/database";
 
 export default async function MemberPage({ params }: { params: Promise<{ name: string }> }) {
     const { name } = await params;
@@ -18,7 +16,7 @@ export default async function MemberPage({ params }: { params: Promise<{ name: s
 
     if (!cleanName) return (<div>No member name provided..!</div>)
 
-    const snaps = await adminDB.collection("members")
+    const snaps = await adminDB.collection(DB_MEMBERS)
         .where("name", "==", cleanName)
         .get();
 
@@ -31,11 +29,14 @@ export default async function MemberPage({ params }: { params: Promise<{ name: s
 
     const member = snaps.docs[0].data() as Member;
     const id = snaps.docs[0].id;
+    console.log("Member Data:", member);
 
     return (
         <div className="w-full sm:max-w-2xl mx-auto  space-y-2 px-6 h-screen">
             <div className="flex justify-between">
-                <h1 className="text-2xl font-bold">{member.name}</h1>
+                <h1 className="flex align-items-center text-xl font-bold">{member.name}
+                    <p>{member.alive === "No" && <span className="material-symbols-outlined text-pink-500 pl-2">deceased</span>}</p>
+                </h1>
                 <DeleteMemberButton id={id} />
             </div>
             <div className="flex justify-start gap-2 items-center">
@@ -44,9 +45,7 @@ export default async function MemberPage({ params }: { params: Promise<{ name: s
                     <p>{member.whoami}</p>
                     <p>{member.maritalstat}</p>
                     <p>{member.gender}</p>
-                    <p>
-                        <strong>Born on:</strong> {member.dob}
-                    </p>
+                    <p>{member.dob}</p>
                 </div>
             </div>
             <EditPhoneNumber id={id} member={member} />

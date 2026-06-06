@@ -30,7 +30,7 @@ export default function RootLayout({
     >
       <body className="min-h-full flex flex-col max-w-2xl mx-auto  bg-slate-200">
         <HeaderClient />
-        <div className=" bg-slate-100">
+        <div className=" bg-slate-100 h-screen">
           {children}
         </div>
       </body>

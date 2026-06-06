@@ -4,6 +4,7 @@ import { deleteObject, ref } from "firebase/storage";
 import { doc, deleteDoc } from "firebase/firestore";
 import { storage, db } from "@/lib/client/firebaseClient";
 import { useRouter } from "next/navigation";
+import { DB_MEMBERS } from "@/lib/const/database";
 
 export default function DeleteMemberButton({ id }: { id: string }) {
     const router = useRouter();
@@ -18,7 +19,7 @@ export default function DeleteMemberButton({ id }: { id: string }) {
         }
 
         // Delete Firestore document
-        await deleteDoc(doc(db, "members", id));
+        await deleteDoc(doc(db, DB_MEMBERS, id));
 
         // Redirect
         router.push("/");
