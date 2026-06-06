@@ -106,6 +106,7 @@ export default function AddRelation({ memberId, member, name, gender, onClose }:
             }),
         });
 
+        setMessage("Relation added successfully!");
         router.push(`/members/${member.name}`);
     }
 
