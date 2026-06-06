@@ -55,7 +55,7 @@ export default function RelationsClient({ id, member }: Props) {
                 type: r.type,
             }),
         }).then(() => {
-            router.push(`/members/${member.name}`)
+            router.push(`/members/${id}`)
         });
 
         // setRelations(prev => prev.filter(r => r.id !== id));
