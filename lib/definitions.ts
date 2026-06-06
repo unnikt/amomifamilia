@@ -49,3 +49,11 @@ export interface Admin {
     uid: string;
     groups: string[];
 }
+
+// --- Family model
+export interface Family {
+    name: string;
+    admins: string[];
+    createdAt: string;
+    createdBy: string;
+}

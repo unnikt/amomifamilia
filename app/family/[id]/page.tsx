@@ -1,5 +1,7 @@
+import AddSubFamily from "@/components/AddSubFamily";
 import { adminAuth, adminDB } from "@/lib/server/firebaseAdmin";
 import { auth } from "firebase-admin";
+import Link from "next/link";
 
 export default async function FamilyAddPage({ params }: { params: Promise<{ id: string }> }) {
 
@@ -47,6 +49,22 @@ export default async function FamilyAddPage({ params }: { params: Promise<{ id: 
                 {filteredAdmins?.map((admin) => (
                     <li key={admin.uid} className="text-gray-700 list-item">
                         {admin.displayName}
+                    </li>
+                ))}
+            </ol>
+
+            <div className="flex  justify-between items-end">
+                <p className="text-lg font-medium my-2">Sub families            </p>
+                <AddSubFamily fid={id} />
+            </div>
+
+            <ol className="list-decimal pl-5 mb-4">
+                {familyData?.subfamilies?.map((f: { id: string, name: string }) => (
+                    <li key={f.id} className="py-1  list-item">
+                        <Link href={`/family/${f.id}`}
+                            className="text-(--primary)">
+                            {f.name}
+                        </Link>
                     </li>
                 ))}
             </ol>

@@ -7,16 +7,14 @@ import {
     limit,
     getDocs,
 } from "firebase/firestore";
-import { Member } from "@/lib/definitions";
-import { DB_MEMBERS } from "@/lib/const/database";
+import { Family, Member } from "@/lib/definitions";
+import { DB_FAMILY } from "@/lib/const/database";
 
-export async function getMembersByName(term: string, group: string): Promise<(Member & { id: string })[]> {
-    if (!group.trim()) return [];
+export async function getFamiliesByName(term: string): Promise<(Family & { id: string })[]> {
     if (!term.trim()) return [];
 
     const q = query(
-        collection(db, DB_MEMBERS),
-        where("groups", "array-contains", group),
+        collection(db, DB_FAMILY),
         orderBy("name"),
         where("name", ">=", term),
         where("name", "<=", term + "\uf8ff"),
@@ -27,6 +25,6 @@ export async function getMembersByName(term: string, group: string): Promise<(Me
 
     return snap.docs.map((d) => ({
         id: d.id,
-        ...(d.data() as Member),
+        ...(d.data() as Family),
     }));
 }

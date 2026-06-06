@@ -50,17 +50,17 @@ export default function FamilyListPage() {
 
             <div className="flex flex-col gap-2">
                 {families.map((fam) => (
-                    <div
+                    <Link
+                        href={`/family/${fam.id}`}
                         key={fam.id}
                         className="p-2 border-b border-b-gray-300"
                     >
                         <div className="flex items-center justify-between">
                             <h2 className="text-lg font-medium">{fam.name}</h2>
-                            <Link
-                                href={`/family/${fam.id}`}
+                            <span
                                 className="material-symbols-outlined text-(--primary) text-sm">
-                                person_add
-                            </Link>
+                                chevron_forward
+                            </span>
                         </div>
 
                         {fam.code && (
@@ -72,7 +72,7 @@ export default function FamilyListPage() {
                         <p className="text-xs text-gray-500 mt-2">
                             Members: {fam.members?.length ?? 1}
                         </p>
-                    </div>
+                    </Link>
                 ))}
             </div>
 
