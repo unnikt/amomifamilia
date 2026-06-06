@@ -52,7 +52,6 @@ export default function RelationsClient({ id, member }: Props) {
                 const pb = priority[b.type.toLowerCase()] ?? 999;
                 return pa - pb;
             });
-            console.log(sorted);
             setRelations(sorted);
             setLoading(false);
         }

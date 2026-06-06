@@ -1,7 +1,7 @@
 "use client";
 
 import { deleteObject, ref } from "firebase/storage";
-import { doc, deleteDoc } from "firebase/firestore";
+import { doc, deleteDoc, updateDoc } from "firebase/firestore";
 import { storage, db } from "@/lib/client/firebaseClient";
 import { useRouter } from "next/navigation";
 import { DB_MEMBERS } from "@/lib/const/database";
@@ -13,6 +13,8 @@ import { Member } from "@/lib/definitions";
 export default function ManageMember({ id, member }: { id: string; member: Member }) {
     const router = useRouter();
     const [openEdit, setOpenEdit] = useState(false);
+    const [openDeceased, setOpenDeceased] = useState(false);
+    const [doe, setDoe] = useState("");
 
     async function handleDelete() {
         // Delete profile picture
@@ -31,17 +33,25 @@ export default function ManageMember({ id, member }: { id: string; member: Membe
     }
     const [showMenu, setShowMenu] = useState(false);
 
-    const handleMarkDeceased = (id: string) => {
+    const handleMarkDeceased = async () => {
         // update your record: alive = "No"
-        console.log("Mark deceased:", id);
+        console.log("Mark deceased:", id, doe);
+        setOpenDeceased(false);
+
+        if (!id) return;
+
+        const ref = doc(db, DB_MEMBERS, id);
+
+        await updateDoc(ref, {
+            alive: "No",
+            doe: doe,
+            updatedAt: new Date().toISOString(),
+        });
+
         setShowMenu(false);
+        router.refresh();
     };
 
-    const handleRemoveFromDB = (id: string) => {
-        // delete from Firestore or your DB
-        console.log("Remove from DB:", id);
-        setShowMenu(false);
-    };
 
     return (
         <div className="relative inline-block text-left">
@@ -64,7 +74,7 @@ export default function ManageMember({ id, member }: { id: string; member: Membe
                         Edit Member
                     </button>
                     <button
-                        onClick={() => handleMarkDeceased(id)}
+                        onClick={() => { setShowMenu(false); setOpenDeceased(true) }}
                         className="block w-full text-left px-3 py-2 hover:bg-slate-100"
                     >
                         Mark as deceased
@@ -90,6 +100,24 @@ export default function ManageMember({ id, member }: { id: string; member: Membe
                     <EditMember id={id} member={member} field="maritalstat" />
                     <EditMember id={id} member={member} field="gender" />
                     <EditMember id={id} member={member} field="dob" />
+                    {member.alive == "No" && <EditMember id={id} member={member} field="doe" />}
+                </div>
+            </Modal>
+            <Modal
+                title="Mark as Deceased"
+                isOpen={openDeceased}
+                onClose={() => { setOpenDeceased(false); window.location.href = `/members/${id}`; }}
+            >
+                <div className="flex flex-col gap-2 text-gray-700 flex-1 p-6 h-fit">
+                    <input type="date"
+                        value={doe}
+                        onChange={(e) => setDoe(e.target.value)}
+                        className="px-4 py-2 outline-0 bg-(--gray)/20 rounded">
+                    </input>
+                    <button
+                        className="text-(--primary) font-bold"
+                        onClick={handleMarkDeceased}
+                    >Save</button>
                 </div>
             </Modal>
         </div>

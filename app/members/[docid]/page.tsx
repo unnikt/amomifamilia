@@ -13,16 +13,17 @@ export default async function MemberPage({ params }: { params: Promise<{ docid: 
     // export default async function MemberPage({ params }: { params: { name: string } }) {
     //     const name = params?.name ?? "";
 
-    console.log(docid);
     const doc = await adminDB.collection(DB_MEMBERS).doc(docid).get();
-
     const member = doc.data() as Member;
     const id = doc.id;
 
     return (
         <div className="w-full sm:max-w-2xl mx-auto  space-y-2 px-6 h-screen">
             <div className="flex justify-between">
-                <h1 className="text-2xl font-bold">{member.name}</h1>
+                <div className="flex items-center gap-2">
+                    <h1 className="text-2xl font-bold">{member.name}</h1>
+                    {member.alive == "No" && <span className="material-symbols-outlined text-pink-500">deceased</span>}
+                </div>
                 <ManageMember id={id} member={member} />
             </div>
             <div className="flex justify-start gap-2 items-center">
