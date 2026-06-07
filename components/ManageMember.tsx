@@ -9,10 +9,13 @@ import { useState } from "react";
 import Modal from "./Modal";
 import EditMember from "./EditMember";
 import { Member } from "@/lib/definitions";
+import RelationsClient from "@/app/ui/Relations";
 
 export default function ManageMember({ id, member }: { id: string; member: Member }) {
     const router = useRouter();
     const [openEdit, setOpenEdit] = useState(false);
+    const [openDelink, setOpenDelink] = useState(false);
+    const [delinked, setDelinked] = useState(false);
     const [openDeceased, setOpenDeceased] = useState(false);
     const [doe, setDoe] = useState("");
 
@@ -51,7 +54,6 @@ export default function ManageMember({ id, member }: { id: string; member: Membe
         router.refresh();
     };
 
-
     return (
         <div className="relative inline-block text-left">
             <button
@@ -71,6 +73,15 @@ export default function ManageMember({ id, member }: { id: string; member: Membe
                         className="block w-full text-left px-3 py-2 hover:bg-slate-100"
                     >
                         Edit Member
+                    </button>
+                    <button
+                        onClick={() => {
+                            setOpenDelink(true);
+                            setShowMenu(false);
+                        }}
+                        className="block w-full text-left px-3 py-2 hover:bg-slate-100"
+                    >
+                        Delink Members
                     </button>
                     <button
                         onClick={() => { setShowMenu(false); setOpenDeceased(true) }}
@@ -102,6 +113,17 @@ export default function ManageMember({ id, member }: { id: string; member: Membe
                     {member.alive == "No" && <EditMember id={id} member={member} field="doe" />}
                 </div>
             </Modal>
+
+            <Modal
+                title="Delink Members"
+                isOpen={openDelink}
+                onClose={() => { setOpenDelink(false); if (delinked) window.location.href = `/members/${id}`; }}
+            >
+                <div className="p-4">
+                    <RelationsClient id={id} member={member as Member} delink={true} onDelink={(f) => setDelinked(f)} />
+                </div>
+            </Modal>
+
             <Modal
                 title="Mark as Deceased"
                 isOpen={openDeceased}

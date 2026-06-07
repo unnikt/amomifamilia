@@ -1,7 +1,6 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import PhoneInput from "./PhoneInput";
 import { Member } from "@/lib/definitions";
 import { db } from "@/lib/client/firebaseClient";
 import { doc, updateDoc } from "firebase/firestore";
@@ -38,8 +37,7 @@ export default function EditMember({ id, member, field, className, onClose }: Pr
             });
         setEditing(false);
         setValue(value);
-        if (onClose)
-            (field == "name") ? onClose(value) : onClose(member.name);
+        if (onClose) (field == "name") ? onClose(value) : onClose(member.name);
     }
 
     function handleCancel() {
@@ -50,13 +48,13 @@ export default function EditMember({ id, member, field, className, onClose }: Pr
     // --- VIEW MODE ---
     if (!editing) {
         return (
-            <div className="flex gap-2 items-center">
+            <div className="flex justify-between gap-2 items-center">
                 <span className={`${className} min-w-30`}>
                     {value || "No value"}
                 </span>
                 <button
                     onClick={() => { setEditing(true); setValue(member[field as keyof Member] as string || "") }}
-                    className="material-symbols-outlined text-slate-400 cursor-pointer"
+                    className="material-symbols-outlined text-slate-400 cursor-pointer w-8"
                 >
                     edit
                 </button>

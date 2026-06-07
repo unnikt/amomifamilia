@@ -1,5 +1,4 @@
 "use client";
-
 import { useState } from "react";
 import PhoneInput from "./PhoneInput";
 import { Member } from "@/lib/definitions";
@@ -14,23 +13,21 @@ interface Props {
 export default function EditPhoneNumber({ id, member }: Props) {
     const [editing, setEditing] = useState(!member.phone);
     // Always initialize with a string
-    const [phone, setPhone] = useState(member.phone || "");
+    const [phone] = useState(member.phone || "");
+    const [initValue] = useState(member.phone || "");
     const [value, setValue] = useState(member.phone || "");
-    const router = useRouter();
 
     async function handleSave() {
         const ref = doc(db, DB_MEMBERS, id);
 
-        await updateDoc(ref, {
-            phone: value,
-            updatedAt: new Date().toISOString(),
-        });
-        window.location.reload();
-    }
-
-    function handleCancel() {
-        setValue(phone);
-        setEditing(false);
+        if (initValue !== value) {
+            await updateDoc(ref, {
+                phone: value,
+                updatedAt: new Date().toISOString(),
+            });
+            window.location.reload();
+        }
+        else setEditing(false);
     }
 
     // --- VIEW MODE ---
@@ -69,13 +66,6 @@ export default function EditPhoneNumber({ id, member }: Props) {
                 >
                     Save
                 </button>
-
-                {/* <button
-                    onClick={handleCancel}
-                    className="border border-gray-400 p-2 rounded-md"
-                >
-                    Cancel
-                </button> */}
             </div>
         </div>
     );
