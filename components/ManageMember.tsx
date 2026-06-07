@@ -35,7 +35,6 @@ export default function ManageMember({ id, member }: { id: string; member: Membe
 
     const handleMarkDeceased = async () => {
         // update your record: alive = "No"
-        console.log("Mark deceased:", id, doe);
         setOpenDeceased(false);
 
         if (!id) return;

@@ -8,9 +8,9 @@ import FamilySearch from "./FamilySearch";
 import { useRouter } from "next/navigation";
 
 interface Props {
-    fid: string;
+    pid: string;
 }
-export default function AddSubFamily({ fid }: Props) {
+export default function AddSubFamily({ pid }: Props) {
     const [open, setOpen] = useState(false);
     const [subfamid, setSubfamid] = useState("");
     const [subfamname, setSubfamname] = useState("");
@@ -19,10 +19,16 @@ export default function AddSubFamily({ fid }: Props) {
     async function handleSave() {
         if (!subfamid) return;
 
-        const ref = doc(db, DB_FAMILY, fid);
+        const ref = doc(db, DB_FAMILY, pid);
 
         await updateDoc(ref, {
             subfamilies: arrayUnion({ id: subfamid, name: subfamname }),
+            updatedAt: new Date().toISOString(),
+        });
+
+        const child = doc(db, DB_FAMILY, subfamid);
+        await updateDoc(child, {
+            parents: arrayUnion(pid),
             updatedAt: new Date().toISOString(),
         });
 

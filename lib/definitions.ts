@@ -53,6 +53,7 @@ export interface Admin {
 // --- Family model
 export interface Family {
     name: string;
+    parents?: string[];
     admins: string[];
     createdAt: string;
     createdBy: string;

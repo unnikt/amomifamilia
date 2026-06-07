@@ -1,5 +1,6 @@
 import { db } from "@/lib/client/firebaseClient";
 import { collection, query, where, getDocs } from "firebase/firestore";
+import { Family } from "../definitions";
 
 export async function getMyFamilies(uid: string) {
     const q = query(
@@ -11,6 +12,6 @@ export async function getMyFamilies(uid: string) {
 
     return snap.docs.map((d) => ({
         id: d.id,
-        ...d.data(),
+        ...d.data() as Family,
     }));
 }

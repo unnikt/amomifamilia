@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { getAuth } from "firebase/auth";
 import { getMyFamilies } from "@/lib/firestore/getMyFamilies";
 import Link from "next/link";
+import { Family } from "@/lib/definitions";
 
 export default function FamilyListPage() {
     const [families, setFamilies] = useState<any[]>([]);
@@ -20,7 +21,8 @@ export default function FamilyListPage() {
             }
 
             const data = await getMyFamilies(user.uid);
-            setFamilies(data);
+            const parents = data.filter(f => { if (!f.parents) return f });
+            setFamilies(parents);
             setLoading(false);
         });
 
@@ -69,8 +71,8 @@ export default function FamilyListPage() {
                             </p>
                         )}
 
-                        <p className="text-xs text-gray-500 mt-2">
-                            Members: {fam.members?.length ?? 1}
+                        <p className="text-sm text-gray-500 mt-2">
+                            Sub families: {fam.subfamilies?.length ?? 0}
                         </p>
                     </Link>
                 ))}

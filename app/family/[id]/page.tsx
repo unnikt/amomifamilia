@@ -55,7 +55,7 @@ export default async function FamilyAddPage({ params }: { params: Promise<{ id: 
 
             <div className="flex  justify-between items-end">
                 <p className="text-lg font-medium my-2">Sub families            </p>
-                <AddSubFamily fid={id} />
+                <AddSubFamily pid={id} />
             </div>
 
             <ol className="list-decimal pl-5 mb-4">
